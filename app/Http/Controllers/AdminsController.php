@@ -14,15 +14,28 @@ class AdminsController extends Controller
      */
     public function index(Request $request)
 {
-   // Get the selected date from the request
+   // Get the selected button's from the request
+
+
    $selectedDate = $request->input('selected_date');
    $cumule = $request->input('cumule');
-//    $today = date('Y-m-d');
 
-//     // If no date is selected, use today's date
-//     if (!$selectedDate) {
-//         $selectedDate = $today;
-//     }
+   if ($request->has('selected_date')) {
+    // Filter button was clicked
+    $selectedDate = $request->input('selected_date');
+
+  } else if ($request->has('cumule')) {
+    // Cumule button was clicked
+    $cumule = $request->input('cumule');
+
+  }
+  
+   $today = date('Y-m-d');
+
+    // If no date is selected, use today's date
+    if (!$selectedDate) {
+        $selectedDate = $today;
+    }
 
 
     // Récupérer toutes les unités avec leurs activités
@@ -35,9 +48,8 @@ class AdminsController extends Controller
         if ($unit->journals) {
              // Filter the journals by date if filter button is clicked
             if ($selectedDate && !$cumule) {
-                $journals = $unit->journals->filter(function ($journal) use ($selectedDate) {
-                    return $journal->date <= $selectedDate;
-                });
+                $journals = $unit->journals->where('date', $selectedDate);
+
                 
             } else {
                 // Calculate cumule between first day of the selectedDate's month and the selectedDate
@@ -60,7 +72,8 @@ class AdminsController extends Controller
                 if ($activite->journals) {
                       // Filter the journals by date if filter button is clicked
                      if ($selectedDate && !$cumule) {
-                        $journals = $activite->journals->where('date', '<=', $selectedDate)->sortBy('date');
+                        $journals = $activite->journals->where('date', $selectedDate);
+
                     } else {
                          // Calculate cumule between first day of the selectedDate's month and the selectedDate
                         $startDate = date('Y-m-01', strtotime($selectedDate));
@@ -86,6 +99,9 @@ class AdminsController extends Controller
                 'Realisation_Production' => 0,
                 'Realisation_Vent' => 0,
                 'Realisation_ProductionVendue' => 0,
+                'Previsions_Production' => 1,
+                'Previsions_Vent' => 1,
+                'Previsions_ProductionVendue' => 1,
             ];
         }
     }
@@ -96,10 +112,17 @@ class AdminsController extends Controller
 
 
 public function show(Request $request)
-{$activities = Activite::all();
+{
+    
+    
+    
+    $activities = Activite::all();
     $units = Unit::with('activites', 'journals')->get();
-    $selectedDate = $request->query('date');
+    $selectedDate = $request->query('selected_date');
     $journals = Journal::where('date', $selectedDate)->get();
+
+
+
     return view('admin.show', ['journals' => $journals, 'units' => $units, 'activities' => $activities,'selectedDate' => $selectedDate]);
 }
 

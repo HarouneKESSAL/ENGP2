@@ -57,7 +57,7 @@
             <div>
 
             </div>
-            {{-- <div>
+            <div>
               <!-- Dropdown  -->
               <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="text-black hover:text-[#ab4c04]  font-medium rounded-lg text-lg px-4 py-2.5 text-center inline-flex items-center" type="button">Gérer<svg class="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -84,7 +84,7 @@
 
                 </ul>
               </div>
-            </div> --}}
+            </div>
 
 
             <a href="#" class="pr-4 text-gray-900 rounded hover:bg-[#af540e]">
@@ -127,7 +127,7 @@
         <br><br>
         <button class="bg-[#F16B07] text-white p-2 pr-4 pl-4 rounded-full hover:bg-[#af540e]" type="submit" name="submit" value="selected_date">Filter</button>
         <br><br>
-        <button class="bg-[#F16B07] text-white p-2 pr-4 pl-4 rounded-full hover:bg-[#af540e]" type="submit" name="submit" value="cumule">Cumule</button>
+        <button class="bg-[#F16B07] text-white p-2 pr-4 pl-4 rounded-full hover:bg-[#af540e]" type="submit" name="cumule" value="cumule">Cumule</button>
       </form>
       
         
@@ -152,6 +152,8 @@
 
                 </tr>
               </thead>
+
+
               <tbody class="bg-white divide-y">
                 @if ($activities)
                 @foreach ($activities as $activity)
@@ -162,65 +164,24 @@
 
                 @foreach ($activity->units as $unit)
                 <tr>
+                  <td>{{ $unit->name }}</td>
+          
                   <td>
-                       {{ $unit->name }}
+                    <a href="{{ url('/admin/show?selected_date=' . $selectedDate . '&unit_id=' . $unit->id) }}">Show</a>
                   </td>
-              
                   
                 
-                
-                  <td>
-                    <div class="dropdown">
-                      <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="text-black hover:text-[#ab4c04]  font-medium rounded-lg text-lg px-4 py-2.5 text-center inline-flex items-center" type="button">Show  <svg class="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                      </svg></button>
-                      <div id="dropdown" class="absolute   z-100 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-                          @foreach ($journalTotals[$unit->id]['journals'] as $journal)
-                          <li> 
-                            <button data-tooltip-target="tooltip-bottom-{{ $journal->id }}" data-tooltip-placement="bottom" type="button" class="bg-[#F16B07] text-white p-2 pr-4 pl-4 rounded-36 hover:bg-[#af540e]">
-                              <a class="dropdown-item" href="/admin/show?date={{ \Carbon\Carbon::parse($journal->date)->format('Y-m-d') }}">{{ \Carbon\Carbon::parse($journal->date)->format('d/m/20y') }}</a>
-
-                              {{-- </button>  --}}
-                            <div id="tooltip-bottom-{{ $journal->id }}" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                              {{ $journal->description }}
-                              <div class="tooltip-arrow" data-popper-arrow></div>
-                            </div>
-                            {{-- <form method="POST" action="{{ url('/admin/showByDate') }}">
-                              @csrf
-                              <select name="selected_date">
-                                  @foreach ($dates as $date)
-                                      <option value="{{ $date }}">{{ $date }}</option>
-                                  @endforeach
-                              </select>
-                              <button type="submit">Show Journals</button>
-                          </form> --}}
-                          
-                          </li>
-                        @endforeach
-                        
-                        </ul>
-                        </div>
-                    </div>
-                    
-                </td>
-                
-                
-                  
-               
-      
-                  
                   <td>{{ $journalTotals[$unit->id]['Previsions_Production'] }}</td>
                   <td>{{ $journalTotals[$unit->id]['Realisation_Production'] }}</td>
-                  {{-- <td class="px-4 py-3{{ ($journalTotals[$unit->id]['Realisation_Production'] / $journalTotals[$unit->id]['Previsions_Production']) < 0.5 ? ' bg-red-500' : '' }}">{{ ($journalTotals[$unit->id]['Realisation_Production'] / $journalTotals[$unit->id]['Previsions_Production'])*100 }}</td> --}}
+                  {{-- <td class=" py-3{{ ($journalTotals[$unit->id]['Realisation_Production'] / $journalTotals[$unit->id]['Previsions_Production']) < 0.5 ? ' bg-red-500' : '' }}">{{ ($journalTotals[$unit->id]['Realisation_Production'] / $journalTotals[$unit->id]['Previsions_Production'])*100 }}</td> --}}
 
                   <td>{{ $journalTotals[$unit->id]['Previsions_Vent'] }}</td>
                   <td>{{ $journalTotals[$unit->id]['Realisation_Vent'] }}</td>
-                  {{-- <td class="px-4 py-3{{ ($journalTotals[$unit->id]['Realisation_Vent'] / $journalTotals[$unit->id]['Previsions_Vent']) < 0.5 ? ' bg-red-500' : '' }}">{{ ($journalTotals[$unit->id]['Realisation_Vent'] / $journalTotals[$unit->id]['Previsions_Vent'])*100 }}</td> --}}
+                  {{-- <td class=" py-3{{ ($journalTotals[$unit->id]['Realisation_Vent'] / $journalTotals[$unit->id]['Previsions_Vent']) < 0.5 ? ' bg-red-500' : '' }}">{{ ($journalTotals[$unit->id]['Realisation_Vent'] / $journalTotals[$unit->id]['Previsions_Vent'])*100 }}</td> --}}
 
                   <td>{{ $journalTotals[$unit->id]['Previsions_ProductionVendue'] }}</td>
                   <td>{{ $journalTotals[$unit->id]['Realisation_ProductionVendue'] }}</td>
-                  {{-- <td class="px-4 py-3{{ ($journalTotals[$unit->id]['Realisation_ProductionVendue'] / $journalTotals[$unit->id]['Previsions_ProductionVendue']) < 0.5 ? ' bg-red-500' : '' }}">{{ ($journalTotals[$unit->id]['Realisation_ProductionVendue'] / $journalTotals[$unit->id]['Previsions_ProductionVendue'])*100 }}</td> --}}
+                  {{-- <td class=" py-3{{ ($journalTotals[$unit->id]['Realisation_ProductionVendue'] / $journalTotals[$unit->id]['Previsions_ProductionVendue']) < 0.5 ? ' bg-red-500' : '' }}">{{ ($journalTotals[$unit->id]['Realisation_ProductionVendue'] / $journalTotals[$unit->id]['Previsions_ProductionVendue'])*100 }}</td> --}}
                 </tr>
                 @endforeach
 
@@ -253,12 +214,6 @@
 
 
 
-
-
-
-
-
-    <!-- ######################################### -->
   </div>
   <script>
     const tooltips = document.querySelectorAll('[data-tooltip-target]');

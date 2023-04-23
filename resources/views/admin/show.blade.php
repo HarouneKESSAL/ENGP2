@@ -1,4 +1,4 @@
-{{-- <!doctype html>
+<!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -54,10 +54,10 @@
             <li>
               <a href="/admin" class="block py-2 pl-3 pr-4 text-[#F16B07] hover:text-[#ab4c04]  rounded" aria-current="page">Dashboard</a>
             </li>
-            <div> --}}
+            <div>
 
-            {{-- </div> --}}
-            {{-- <div>
+            </div>
+            <div>
               <!-- Dropdown  -->
               <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="text-black hover:text-[#ab4c04]  font-medium rounded-lg text-lg px-4 py-2.5 text-center inline-flex items-center" type="button">Gérer<svg class="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -84,10 +84,10 @@
 
                 </ul>
               </div>
-            </div> --}}
+            </div>
 
 
-            {{-- <a href="#" class="pr-4 text-gray-900 rounded hover:bg-[#af540e]">
+            <a href="#" class="pr-4 text-gray-900 rounded hover:bg-[#af540e]">
               <a class="bg-[#F16B07] text-white p-2 pr-4 pl-4 rounded-full hover:bg-[#af540e]" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">{{ __('Logout') }}</a>
               <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
                 @csrf
@@ -99,50 +99,57 @@
       </div>
     </nav>
 
-    <div class="container mx-auto py-4">
-      <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold">Journals for {{ $selectedDate }}</h1>
-        <a href="{{ route('admin.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-          Back
-        </a>
-      </div>
-      <table class="table-auto w-full mt-4">
+    <div class="container">
+      <h1>Journal Entries for {{$selectedDate}}</h1>
+      <table class="table">
         <thead>
           <tr>
-            <th class="px-4 py-2 text-gray-600">Unit Name</th>
-            <th class="px-4 py-2 text-gray-600">Activity Name</th>
-            <th class="px-4 py-2 text-gray-600">Realisation Production</th>
-            <th class="px-4 py-2 text-gray-600">Realisation Vente</th>
-            <th class="px-4 py-2 text-gray-600">Realisation Production Vendue</th>
-            <th class="px-4 py-2 text-gray-600">Previsions Production</th>
-            <th class="px-4 py-2 text-gray-600">Previsions Vente</th>
-            <th class="px-4 py-2 text-gray-600">Previsions Production Vendue</th>
+            <th class="px-4 py-3 ">Activité</th>
+                  <th class="px-4 py-3 ">Unité</th>
+                  <th class="px-10 py-3 bg-red-500">Date</th>
+                  <th class="px-4 py-3 bg-orange-200">Previsions Production</th>
+                  <th class="px-4 py-3 bg-orange-200">Réalisations Production</th>
+                  <th class="px-4 py-3 bg-red-400">Taux Production</th>
+                  <th class="px-4 py-3 bg-blue-200">Previsions Vente</th>
+                  <th class="px-4 py-3 bg-blue-200">Réalisations Vente</th>
+                  <th class="px-4 py-3 bg-blue-400">Taux Vente</th>
+                  <th class="px-4 py-3 bg-green-200">Previsions Production Vendue</th>
+                  <th class="px-4 py-3 bg-green-200">Réalisations Production Vendue</th>
+                  <th class="px-4 py-3 bg-green-500">Taux Production Vendue</th
           </tr>
         </thead>
         <tbody>
-          @foreach ($journals as $journal)
-            <tr>
-              <td class="border px-4 py-2">{{ $journal->units->name }}</td>
-              <td class="border px-4 py-2">{{ $journal->activite->name }}</td>
-              <td class="border px-4 py-2">{{ $journal->Realisation_Production }}</td>
-              <td class="border px-4 py-2">{{ $journal->Realisation_Vent }}</td>
-              <td class="border px-4 py-2">{{ $journal->Realisation_ProductionVendue }}</td>
-              <td class="border px-4 py-2">{{ $journal->Previsions_Production }}</td>
-              <td class="border px-4 py-2">{{ $journal->Previsions_Vent }}</td>
-              <td class="border px-4 py-2">{{ $journal->Previsions_ProductionVendue }}</td>
-            </tr>
+          @foreach($units as $unit)
+            @foreach($unit->journals as $journal)
+              @if($journal->date === $selectedDate)
+                <tr>
+                  <td>{{$unit->name}}</td>
+                  @foreach ($unit->activites as $unitdd)
+                  <td>{{$unitdd->name}}</td>
+                  @endforeach
+                  <td>{{$journal->date}}</td>
+                  <td>{{$journal->Previsions_Production}}</td>
+                  <td>{{$journal->Realisation_Production}}</td>
+                  <td>{{ $journal->Previsions_Production != 0 ? round(($journal->Realisation_Production / $journal->Previsions_Production) * 100, 2) : 'N/A' }}%</td>
+                  
+                  <td>{{$journal->Previsions_Vent}}</td>
+                  <td>{{$journal->Realisation_Vent}}</td>
+                  <td>{{ $journal->Previsions_Vent != 0 ? round(($journal->Realisation_Vent / $journal->Previsions_Vent) * 100, 2) : 'N/A' }}%</td>
+                 
+                  <td>{{$journal->Previsions_ProductionVendue}}</td>
+                  <td>{{$journal->Realisation_ProductionVendue}}</td>
+                  <td>{{ $journal->Previsions_ProductionVendue != 0 ? round(($journal->Realisation_ProductionVendue / $journal->Previsions_ProductionVendue) * 100, 2) : 'N/A' }}%</td>
+                
+                  
+                </tr>
+              @endif
+            @endforeach
           @endforeach
         </tbody>
       </table>
     </div>
-
-
-
-
-
-
-</div>
-<script>
+    
+    <script>
   const tooltips = document.querySelectorAll('[data-tooltip-target]');
 
   tooltips.forEach((tooltip) => {
@@ -212,4 +219,4 @@
 
 </body>
 
-</html> --}}
+</html>
