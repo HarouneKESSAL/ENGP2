@@ -158,7 +158,8 @@ Route::get('/test-relation', function() {
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
   Route::resource('admin', AdminsController::class);
-  
+  Route::get('/admin/{date}', [AdminsController::class, 'index']);
+ 
   
 ################################# units ########################################
 
